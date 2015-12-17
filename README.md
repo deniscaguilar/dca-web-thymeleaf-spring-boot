@@ -1,4 +1,4 @@
-# example-integration-spring-boot
+# Projeto Exemplo de Integração entre BootStrap, Thymeleaf, Spring Framework (Spring Boot e Spring Data)
 Repositório para apresentar a integração do spring boot
 
 ### Sobre o projeto ###
@@ -49,10 +49,10 @@ Essa aplicação foi desenvolvida seguindo os modelos de arquitetura MVC e REST.
 * Maven: gestão de ciclo de vida e build do projeto.
 
 No diretório raiz do projeto disponibilizo os arquivos: 
-* Questao1.txt
-* Questao2.txt
-* Questao3.txt
-* Questao4.txt
+* DetalhementoMenuCEP.txt
+* DetalhamentoMenuEndereco.txt
+* DetalhamentoMenuStream.txt
+* ExplicacaoSobreProcessoHTTP.txt
 
 ### Pré-requisitos ###
 
