@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorator="layout">
+  <body>
+    <h1 layout:fragment="header" th:utext="#{endereco.form.title(Visualizar)}">Visualizar</h1>
+    <div layout:fragment="content" class="container">
+      <div class="col-md-12 text-right">
+        <a th:href="@{/}" href="enderecos.html" th:text="#{endereco.form.list.enderecos}">
+          Lista
+        </a>
+      </div>
+      
+      <div class="col-md-12">
+        <address class="address"></address>
+      </div>
+      
+    </div>
+    <script layout:fragment="jsOnPage" th:inline="javascript">
+    /*<![CDATA[*/
+      var enderecoId = /*[[${id}]]*/ 0;
+    
+      function fillAddress(data) {
+        if (data) {
+    	  var content = data.logradouro + ', ' + data.numero + ', ' + data.complemento + ' - CEP: ' 
+    	    + data.cep + ' - ' + data.bairro + ' - ' +data.cidade + ' - ' + data.estado;
+    	  $('.address').append('<strong>'+content+'</strong>');
+    	} else {
+          $('.address').html('');
+    	}
+      }
+      
+      function findEndereco() {
+        clearMessages();
+        fillAddress();
+        
+        $.ajax({
+          url: "/enderecos/"+enderecoId,
+          dataType: 'json',
+          success: function(json) {
+            fillAddress(json);
+          },
+          error: function(data){
+        	showError("Não foi possivel obter o endereço");
+            console.log(data);
+          }
+        });
+      }
+      
+      $(document).ready(function() {
+        activeNavigation('endereco');
+        if (enderecoId) {
+          findEndereco();
+        }
+      });
+    /*]]>*/
+    </script>
+  </body>
+</html>

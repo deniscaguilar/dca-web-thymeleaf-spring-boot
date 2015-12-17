@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorator="layout">
+  <body>
+    <h1 layout:fragment="header" th:utext="#{cep.search.title}">Consulta de Cep</h1>
+    <div layout:fragment="content" class="container">
+      <form class="mainForm">
+        <div class="col-md-3 form-group">
+          <label for="text"  th:text="#{cep.search.cep}">Cep</label>
+          <input type="text" name="cep" class="form-control" th:placeholder="#{cep.search.placeholder.cep}" />
+        </div>
+        
+        <div class="col-md-12 form-group">
+          <button type="button" class="btn btn-lg btn-app btn-primary" 
+            th:text="#{cep.search.btn.pesquisar}">Consultar Cep</button>
+        </div>
+      </form>
+      
+      <div class="col-md-12">
+        <address class="address"></address>
+      </div>
+    </div>
+    <script layout:fragment="jsOnPage" th:inline="javascript">
+    /*<![CDATA[*/
+      function fillAddress(data) {
+        if (data) {
+    	  var content = data.logradouro + ' - CEP: ' + data.numeroCep 
+    	    + ' - ' + data.bairro + ' - ' +data.cidade + ' - ' + data.estado;
+    	  $('.address').append('<strong>'+content+'</strong>');
+    	} else {
+          $('.address').html('');
+    	}
+      }
+      
+      function findCep() {
+        var key = $('input[name="cep"]').val();
+        
+        if (!$(".mainForm").valid()) {
+          return;
+        }
+        
+        clearMessages();
+        fillAddress();
+        $(".btn-app").prop('disabled', true);
+          
+        $.ajax({
+          type: "GET",
+          url: "/ceps/"+key,
+          success: function(json) {
+            if (json) {
+              if (json.numeroCep != key) {
+                showWarning('A pesquisa encontrou o Cep ' + json.numeroCep + ' por proximidade.');
+              }
+            }
+            fillAddress(json);
+            $(".btn-app").prop('disabled', false);
+          },
+          error: function(data) {
+            $(".btn-app").prop('disabled', false);
+            if (data.status == '404') {
+              showWarning('O cep '+key+" não foi encontrado.")
+              $(".btn-app").prop('disabled', false);
+              return;
+            }
+            var msgError;
+            if (data.responseText) {
+              var responseText = JSON.parse(data.responseText);
+              msgError = responseText["message"];
+            } else {
+              msgError = data.statusText;
+            }
+            showError("Não foi possivel obter o Cep: "+msgError);
+            console.log(data);
+          }
+        });
+      }
+      
+      $(document).ready(function() {
+        activeNavigation('cep');
+        $(".btn-app").click(function(e){
+          e.preventDefault();
+          findCep();
+        });
+        
+        $(".mainForm").validate({
+          rules: {
+            cep: {
+              required: true
+            }
+          },
+          messages: {
+          	cep: {
+              required: 'Cep é obrigatório.'
+            }
+          },
+          highlight: function(element) {
+            $(element).closest('.form-group').addClass('has-error');
+          },
+          unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('has-error');
+          }
+        });
+      });
+    /*]]>*/
+    </script>
+  </body>
+</html>

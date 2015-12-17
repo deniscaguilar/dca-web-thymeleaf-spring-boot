@@ -1,0 +1,36 @@
+Estratégia utilizada implementar a solução da Questão 2 - Manutenção de Endereços.
+=======================================================================================
+
+Nessa questão eu implementei o serviço REST com operações para realizar o cadastro de Endereços. Criei uma entidade Endereço, nessa entidade irá conter
+todas as informações detalhadas de um endereço. Utilizei da entidade Cep e do serviço de Cep para quando for digitado um cep para cadastrar um novo endereço, nesse caso,
+buscamos na base de cep o endereço, se ele for encontrado iremos utilizar os dados do cep para preencher alguns campos de Endereço, porém, não existe nenhum vínculo 
+de relacionamento entre as duas entidades.
+
+O serviço de Endereços oferece as operações de CRUD do Endereço:
+- Método GET para consulta de todos os Endereços cadastrados, retorna um Json com os endereços.
+- Método GET com filtro pelo ID (identificador único) do Endereço, para consulta exclusiva de um determinado endereço.
+- Método POST para incluir um Endereço.
+- Método PUT para atualizar um Endereço já cadastrado.
+- Método DELETE para excluir um Endereço já cadastrado.
+
+Componentes Java
+- br.com.dca.controller.EnderecoController.java: Controller REST, responsável por expor as funcionalidades REST do Endereço.
+- br.com.dca.controller.ViewController.java: Controller REST responsável por rotear as páginas de manipulação de endereço.
+- br.com.dca.service.EnderecoService.java: Service responsável por fazer as validaçoes e controlar o componente de persistência de endereço.
+- br.com.dca.repository.EnderecoRepositorio.java: Interface/componente de persistência, com as operações CRUD e consultas, sob a entidade Endereco.
+- br.com.dca.domain.Endereco.java: Entidade com os dados de Endereço. Além do mapeamento da entidade também faço a regras de validação para preenchimento dos campos.
+- br.com.dca.domain.EnderecoId: Classe responsável por trafegar um ID único de endereço no formato Json
+- br.com.dca.domain.ListaEnderecos: Classe responsável por trafegar a lista de endereços que será convertida no formato Json
+
+Base de dados
+- Tabela: Endereco: Inserts utilizados para realizar da manipulação de endereços, contidos no arquivo data.sql
+
+Front End
+- templates/enderecos/lista.html: Página com a lista de Endereços cadastrados. Página principal para fluxo de navegação da manipulação de Endereço.
+- templates/enderecos/formulario.html: Página para incluir ou alterar Endereço.
+- templates/enderecos/detalhe.html: Página de detalhe para a visualização das informações do Endereço selecionado.
+(Utilizo na camada de front o bootstrap, integrado com Jquery para montagem do layout e utilização de Ajax)
+
+Caso de teste
+- br.com.dca.controller.tests.EnderecoControllerTest.java: Classe onde defino os testes para o serviço REST do Endereço.
+(As descrições dos cenários de testes estão descritos em cada método de teste dessa classe.)

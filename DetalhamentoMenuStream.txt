@@ -1,0 +1,25 @@
+Estratégia utilizada implementar a solução da Questão 3 - Validação Stream Caracteres
+=======================================================================================
+
+Implementei uma classe Java com algoritmo para identificar, classificar e apresentar caracteres de uma String que não se repetem. 
+Nesse algoritimo sempre respeito a ordem dos caracteres de acordo com a definição da String. Essa classe respeita a interface Stream, de acordo com o
+enunciado.
+
+
+Componentes Java
+- br.com.dca.stream.Stream.java: Interface onde exponho os métodos para navegar e recuperar o caracteres que não se repetem.
+
+- br.com.dca.stream.ValidadorCaracter.java: Classe que implementa a interface Stream, é a classe que contém o algoritmo para analisar e organizar 
+  caracteres que não se repetem, em uma determinada String, sempre respeitando a ordem dos caracteres na String.
+
+- br.com.dca.controller.StreamController.java: Controller REST, responsável por expor os métodos de validação do algoritimo de validação de String via POST;
+  
+- br.com.dca.controller.ViewController.java: Controller REST responsável por rotear a página de teste de Stream de Caracter.
+
+Front End
+- templates/stream/formulario.html: Página que permite que o usuário faça a submissão de um texto qualquer para identificar caracteres que não repetem.
+(Utilizo na camada de front o bootstrap, integrado com Jquery para montagem do layout e utilização de Ajax)
+
+Caso de teste
+- br.com.dca.stream.test.ValidadorCaracterTest.java: Classe onde defino os testes para validar o algoritmo implementado na classe ValidadorCaracter.
+(As descrições dos cenários de testes estão descritos em cada método de teste dessa classe.)

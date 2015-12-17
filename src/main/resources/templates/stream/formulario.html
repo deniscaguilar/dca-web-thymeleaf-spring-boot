@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorator="layout">
+  <body>
+    <h1 layout:fragment="header" th:utext="#{stream.form.title}">Formulário</h1>
+    <div layout:fragment="content" class="container">
+      <form class="mainForm">
+        <div class="col-md-6 form-group">
+          <label for="text"  th:text="#{stream.form.conteudo}">Conteudo</label>
+          <textarea name="texto" class="form-control" th:placeholder="#{stream.form.placeholder.conteudo}"></textarea>
+        </div>
+        
+        <div class="col-md-12 form-group">
+          <h4 class="result"></h4>
+        </div>
+        
+        <div class="col-md-12 form-group">
+          <button type="button" class="btn btn-lg btn-app btn-primary" 
+            th:text="#{stream.form.btn.verificar}">Verificar</button>
+        </div>
+      </form>
+    </div>
+    <script layout:fragment="jsOnPage" th:inline="javascript">
+    /*<![CDATA[*/
+      function fillNonReaptedChar(data) {
+        if (data) {
+    	  $('.result').append('<strong>'+data+'</strong>');
+    	} else {
+          $('.result').html('');
+    	}
+      }
+      
+      function sendStream() {
+        var content = $('textarea[name="texto"]').val();
+        
+        if (!$(".mainForm").valid()) {
+        	return;
+        }
+        
+        clearMessages();
+        fillNonReaptedChar();
+        $(".btn-app").prop('disabled', true);
+          
+        $.ajax({
+          type: "POST",
+          url: "/stream/",
+          data: 'texto='+content,
+          success: function(data) {
+            fillNonReaptedChar(data);
+            $(".btn-app").prop('disabled', false);
+          },
+          error: function(data) {
+            $(".btn-app").prop('disabled', false);
+            if (data.status == '404') {
+              showWarning('O texto '+key+" não é válido.")
+              $(".btn-app").prop('disabled', false);
+              return;
+            }
+            var msgError;
+            if (data.responseText) {
+              var responseText = JSON.parse(data.responseText);
+              msgError = responseText["message"];
+            } else {
+              msgError = data.statusText;
+            }
+            showError("Não foi possivel verificar o texto: "+msgError);
+            console.log(data);
+          }
+        });
+      }
+      
+      $(document).ready(function() {
+        activeNavigation('stream');
+        $(".btn-app").click(function(e){
+          e.preventDefault();
+          sendStream();
+        });
+        
+        $(".mainForm").validate({
+          rules: {
+            conteudo: {
+              required: true
+            }
+          },
+          messages: {
+            coutendo: {
+              required: 'Texto é obrigatório.'
+            }
+          },
+          highlight: function(e) {
+            $(e).closest('.form-group').addClass('has-error');
+          },
+          unhighlight: function(e) {
+            $(e).closest('.form-group').removeClass('has-error');
+          }
+        });
+      });
+      
+    /*]]>*/
+    </script>
+  </body>
+</html>

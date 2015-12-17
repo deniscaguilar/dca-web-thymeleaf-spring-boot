@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorator="layout">
+  <body>
+    <h1 layout:fragment="header" th:utext="#{endereco.form.title(${id} != null ? Editar : Incluir)}">Formulário</h1>
+    <div layout:fragment="content" class="container">
+      <form class="mainForm">
+        <div class="col-md-12 text-right">
+          <a th:href="@{/}" href="enderecos.html" th:text="#{endereco.form.list.enderecos}">
+            Lista
+          </a>
+        </div>
+        <input type="hidden" name="id" th:value="${id}" />
+        
+        <div class="col-md-3 form-group">
+          <label for="text"  th:text="#{endereco.form.cep}">cep</label>
+          <input type="text" name="cep" class="form-control" th:placeholder="#{endereco.form.placeholder.cep}"/>
+        </div>
+        
+        <div class="col-md-12"></div>
+        
+        <div class="col-md-6 form-group">
+          <label for="logradouro" th:text="#{endereco.form.logradouro}">logradouro</label>
+          <input type="text" name="logradouro" class="form-control" th:placeholder="#{endereco.form.placeholder.logradouro}" />
+        </div>
+        <div class="col-md-2">
+          <label for="text" th:text="#{endereco.form.numero}">numero</label>
+          <input type="text" name="numero" class="form-control" th:placeholder="#{endereco.form.placeholder.numero}" />
+        </div>
+        <div class="col-md-3">
+          <label for="text" th:text="#{endereco.form.complemento}">complemento</label>
+          <input type="text" name="complemento" class="form-control" th:placeholder="#{endereco.form.placeholder.complemento}" />
+        </div>
+        
+        <div class="col-md-12 "></div>
+        
+        <div class="col-md-4 form-group">
+          <label for="text" th:text="#{endereco.form.bairro}">bairro</label>
+          <input type="text" name="bairro" class="form-control" th:placeholder="#{endereco.form.placeholder.bairro}" />
+        </div>
+        
+        <div class="col-md-4">
+          <label for="text" th:text="#{endereco.form.cidade}">cidade</label>
+          <input type="text" name="cidade" class="form-control" th:placeholder="#{endereco.form.placeholder.cidade}" />
+        </div>
+        
+        <div class="col-md-3">
+          <label for="text" th:text="#{endereco.form.estado}">uf</label>
+          <select name="estado" class="form-control" >
+            <option value="">-</option>
+            <option value="AC">Acre</option>
+            <option value="AL">Alagoas</option>
+            <option value="AP">Amapá</option>
+            <option value="AM">Amazonas</option>
+            <option value="BA">Bahia</option>
+            <option value="CE">Ceará</option>
+            <option value="DF">Distrito Federal</option>
+            <option value="ES">Espírito Santo</option>
+            <option value="GO">Goiás</option>
+            <option value="MA">Maranhão</option>
+            <option value="MT">Mato Grosso</option>
+            <option value="MS">Mato Grosso do Sul</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="PA">Pará</option>
+            <option value="PB">Paraiba</option>
+            <option value="PR">Paraná</option>
+            <option value="PE">Pernambuco</option>
+            <option value="PI">Piauí</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="RN">Rio Grande do Norte</option>
+            <option value="RS">Rio Grande do Sul</option>
+            <option value="RO">Rondônia</option>
+            <option value="RR">Roraima</option>
+            <option value="SC">Santa Catarina</option>
+            <option value="SP">São Paulo</option>
+            <option value="SE">Sergipe</option>
+            <option value="TO">Tocantins</option>
+          </select>
+        </div>
+        
+        <div class="col-md-12 form-group">
+          <button type="button" class="btn btn-lg btn-app btn-primary" 
+            th:text="#{endereco.form.btn.salvar}">salvar</button>
+        </div>
+      </form>
+      
+      <form id="forwardForm" method="GET" action="/"></form>
+    </div>
+    <script layout:fragment="jsOnPage" th:inline="javascript">
+    /*<![CDATA[*/
+      var enderecoId = /*[[${id}]]*/ 0;
+    
+      function fillForm(data) {
+    	$('input[name="logradouro"]').val(data && data.logradouro ? data.logradouro : "");
+        $('input[name="bairro"]').val(data && data.bairro ? data.bairro : "");
+        $('input[name="cidade"]').val(data && data.cidade ? data.cidade : "");
+        $('select[name="estado"]').val(data && data.estado ? data.estado : "");
+        $('input[name="numero"]').val(data && data.numero ? data.numero : "");
+        $('input[name="complemento"]').val(data && data.complemento ? data.complemento : "");
+        
+        if (data && !data.numeroCep) {
+          $('input[name="cep"]').val(data && data.cep ? data.cep : "");    		  
+        }
+      }
+      
+      function findEndereco() {
+        clearMessages();
+        $(".btn-app").prop('disabled', true);
+        
+        $.ajax({
+          url: "/enderecos/"+enderecoId,
+          dataType: 'json',
+          success: function(json) {
+        	if (json) {
+              fillForm(json);
+              $(".btn-app").prop('disabled', false);
+        	}
+          },
+          error: function(data){
+        	showError("Não foi possivel obter o endereço");
+            console.log(data);
+          }
+        });
+      }
+      
+      function findCep() {
+        var key = $('input[name="cep"]').val();
+        
+        if (key.trim() == '') {
+          return;
+        }
+        
+        clearMessages();
+        fillForm();
+        $(".btn-app").prop('disabled', false);
+        
+        $.ajax({
+          type: "GET",
+          url: "/ceps/"+key,
+          success: function(json) {
+            fillForm(json);
+          }
+        });
+      }
+      
+      function sendEndereco() {
+        clearMessages();
+    	if (!$(".mainForm").valid()) {
+          return;
+        }
+        
+        $(".btn-app").prop('disabled', true);
+    	var fields = $(".mainForm :input");
+        var endereco = {};
+        $.each(fields, function(index, data){
+          if (data.type == 'text' || data.type == 'select-one' || data.type == 'hidden') {
+            var name = data.name;
+            if (name != '') {
+              endereco[name] = data.value;
+            }
+          }
+        });
+        
+        var requestType = enderecoId != null ? "PUT" : "POST";
+        
+        var json = JSON.stringify(endereco);
+        $.ajax({
+          headers: { 
+            'Content-Type': 'application/json' 
+          },
+          type: requestType,
+          url: "/enderecos",
+          data: json,
+          success: function(data) {
+            $("#forwardForm").submit();
+          },
+          error: function(data) {
+        	$(".btn-app").prop('disabled', false);
+        	var msgError;
+        	if (data.responseText) {
+        	  var responseText = JSON.parse(data.responseText);
+        	  msgError = responseText["message"];
+            } else {
+              msgError = data.statusText;
+            }
+        	showError("Não foi possivel salvar endereço: "+msgError);
+            console.log(data);
+          }
+        });
+      }
+      
+      $(document).ready(function() {
+        activeNavigation('endereco');
+        
+        if (enderecoId) {
+          findEndereco();
+        }
+        
+        $( "input[name='cep']" ).change(function() {
+          findCep();
+        });
+        
+        $(".btn-app").click(function(e){
+          e.preventDefault();
+          sendEndereco();
+        });
+        
+        $(".mainForm").validate({
+          rules: {
+            cep: {
+              required: true
+            },
+            logradouro: {
+              minlength: 3,
+              maxlength: 200,
+              required: true
+            },
+            numero: {
+              minlength: 1,
+              maxlength: 20,
+              required: true
+            },
+            cidade: {
+              minlength: 3,
+              maxlength: 120,
+              required: true
+            },
+            estado: {
+              required: true
+            }
+          },
+          messages: {
+            cep: {
+              required: 'Cep é obrigatório.'
+            },
+            logradouro: {
+              minlength: 'Informe pelo menos 3 caracteres.',
+              maxlength: 'Informe no máximo 200 caracteres.',
+              required: 'Logradouro é obrigatório.'
+            },
+            numero: {
+              minlength: 'Informe pelo menos 1 caracter.',
+              maxlength: 'Informe no máximo 20 caracteres.',
+              required: 'Número é obrigatório.'
+            },
+            cidade: {
+              minlength: 'Informe pelo menos 3 caracter.',
+              maxlength: 'Informe no máximo 120 caracteres.',
+              required: 'Cidade é obrigatório.'
+            },
+            estado: {
+              required: 'Estado é obrigatório.'
+            }
+          },
+          highlight: function(element) {
+            $(element).closest('.form-group').addClass('has-error');
+          },
+          unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('has-error');
+          }
+        });
+      });
+    /*]]>*/
+    </script>
+  </body>
+</html>

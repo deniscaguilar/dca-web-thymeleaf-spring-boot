@@ -1,0 +1,37 @@
+Resposta da Questão 4 - Processo do Protocolo HTTP entre o Client e o Server
+=======================================================================================
+
+Segue algumas considerações/características necessárias mencionar antes de detalhar minha resposta:
+
+- Protocolo HTTP: protocolo utilizado pela web para a comunicação entre o cliente e o servidor.
+- Requisição (Request): É a solicitação do cliente. Trata-se de uma mensagem que descreve qual recurso o cliente está pedindo.
+- Resposta (Response): É a resposta do servidor. Indica se a requisição foi processada com sucesso ou não, caso tenha tido sucesso também retorna o conteúdo do recurso solicitado. 
+- Recursos: trata-se do conteúdo entregue ao cliente pelo servidor. Esses recursos podem ser: HTML, CSS, JavaScript, imagens, streams, entre outros. 
+- Conteúdo estático e dinâmico: Estático é um conteúdo pronto e disponível para que o servidor o envie ao cliente solicitante, por exemplo uma imagem ou um arquivo CSS. Dinâmico é quando o servidor recebe uma requisição de um recurso que depende de um processamento, por exemplo, exibir uma lista de produtos cadastrados na base de dados.
+- Para a resposta levei em consideração a comunicação com protocolo HTTP na versão 1.1.
+
+Abaixo vou detalhar em sequência o que ocorre quando o usuário digita uma URL no browser e pressiona Enter:
+
+1 - Antes de tudo é identificado o IP do servidor da URL digitada. A comunicação com o servidor ocorre sempre via endereço IP, a URL é na verdade apenas um apelido para facilitar aos usuários a identificação do site. O browser envia a URL para um serviço DNS, que responde com conteúdo IP relacionado a URL informada, isso ocorre no 1o acesso, após isso o IP é armazenado localmente (cache DNS) com o intuito de agilizar requisições futuras para a mesma URL.
+
+2 - O browser utilizado para acesso ao site é o cliente da conexão HTTP, ele é o responsável por gerar a mensagem de requisição descrevendo o recurso e indicando o servidor.
+
+3 - Após isso a conexão com o servidor da URL informada é estabelecida. O servidor é responsável por analisar a requisição feita pelo cliente (browser), e identifica que o recurso solicitado é a raiz do site, a página HTML inicial. 
+
+3.1 - Após essa identificação o servidor delega a geração da página (conteúdo dinâmico).
+
+3.2 - Assim que a página estiver pronta, o servidor retorna para o cliente (browser) o conteúdo HTML e o Status 200, indicando que a requisição foi processada com sucesso. Caso o servidor identifique que o cliente suporta o uso de compactação de dados, gzip por exemplo, ele utiliza disso para reduzir o volume trafegado.
+
+4 - O irá browser receber a mensagem de resposta, identifica o Status 200, e inicia o processo de interpretação e renderização do código HTML. Se o servidor tiver enviado conteúdo compactado o browser realiza a descompactação antes de processar o HTML.
+
+4.1 - Enquanto a renderização do HTML acontece, o browser solicita os recursos complementares utilizados na página, como: arquivos CSS, JavaScript e imagens. Caso essa seja a primeira requisição para o site da URL informada, todos os recursos complementares deverão ser solicitados ao servidor. Essas requisições podem ser realizadas simultaneamente para o mesmo servidor, mas com um limite máximo de conexões de acordo com a versão do browser. Outro detalhe é o uso do Keep Alive para reduzir o custo da conexão HTTP. Cada recurso complementar pode ser armazenado em cache local, com uma informação indicando quando esse recurso expira (data). Dessa forma em requisições futuras para o site da URL informada esse recurso, se ainda não expirou, já estará disponível no cache do browser, sem a necessidade de uma requisição complementar ao servidor.
+
+5 - O servidor URL informada, caso seja necessário, recebe do browser a requisição de um recurso complementar. O servidor analisa se trata de um recurso estático ou dinâmico.
+
+5.1 - O servidor retorna o recurso para o browser, quando o mesmo for solicitado.
+
+6 - O browser recebe o recurso complementar do servidor, quando possível armazena no cache para requisições futuras. Se o recurso já estiver disponível no cache, o mesmo o utiliza.
+Observação: Os passos 5, 5.1 e 6 irá sempre ocorrer para cada recurso complementar.
+
+7 - O browser conclui o processo de renderização da página principal da URL digitada.
+

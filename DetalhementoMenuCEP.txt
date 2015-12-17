@@ -1,0 +1,45 @@
+Estratégia utilizada implementar a solução da Questão 1 - Pesquisa de CEPs.
+=======================================================================================
+
+Criei um controller Rest onde implementei o serviço REST para realizar a consulta de endereços a partir do número do Cep.
+Criei uma entidade Cep onde mantenho a estrutura para persistir os dados do Cep, sendo que o campo numeroCep representa o conteúdo da chave do Cep 
+utilizada para pesquisa.
+
+O serviço de consulta de Cep é acionado via método GET. Abaixo segue algumas das regras das implementações desse método:
+- É permitido que a entrada da número do cep seja na URL ou via conteúdo Json, onde passamos o atributo numeroCep e Valor;
+
+- A consulta pelo número do cep é validada e busca o cep cadastrado na base de dados, será retornado o status HTTP 200 e os dados do endereço na response no formato Json,
+quando o número de cep informado existir, quando o numero do cep informado não existir é lançado uma exception com a mensagem Cep Inválido; 
+
+- Caso o número do cep não seja informado, o sistema retorna o status HTTP 415 (UNSUPORTTED MEDIA TYPE);
+
+- Caso a chave esteja no formato valido, mas não conste na base de dados o sistema retorna o status HTTP 404 (NOT FOUND);
+
+- O conteúdo que é trafegado entre o cliente e o serviço suporta o formato application/json.
+
+Componentes Java
+- br.com.dca.controller.CepController.java: Controller REST, responsável por expor os métodos de consulta de cep via GET;
+
+- br.com.dca.controller.ViewController.java: Controller REST responsável por rotear a página de pesquisa de cep.
+
+- br.com.dca.service.CepService.java: Service responsável por validar o formato do número cep, acionar o componente de 
+  persistência e por fazer a consulta de Cep por proximidade, quando a chave original não for encontrada.
+  
+- br.com.dca.util.CepUtil.java: Classe utilitária responsável por gerar os sufixos de cep para gerar a lista com todos os número de 
+  cep para ser feita a busca por proximidade.
+  
+- br.com.dca.repository.CepRepositorio.java: Interface/componente de persistência, com as operações de consultas de cep, sob a entidade Cep.
+
+- br.com.dca.domain.Cep.java: Entidade com os dados de Cep. Além do mapeamento da entidade também faço a regras de validação para preenchimento dos campos.
+
+Base de dados
+- Tabela: Cep : Inserts utilizados para realizar a validação de Ceps, contidos no arquivo data.sql
+
+Front End
+- templates/ceps/consultar.html: Página de consulta de Cep. 
+(Utilizo na camada de front o bootstrap, integrado com Jquery para montagem do layout e utilização de Ajax)
+
+Caso de teste
+- br.com.dca.controller.tests.CepControllerTest.java: Classe onde defino os testes para o serviço REST do Cep.
+(As descrições dos cenários de testes estão descritos em cada método de teste dessa classe.)
+  
