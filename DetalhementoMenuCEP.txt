@@ -1,4 +1,4 @@
-Estratégia utilizada implementar a solução da Questão 1 - Pesquisa de CEPs.
+Estratégia utilizada implementar a Pesquisa de CEPs.
 =======================================================================================
 
 Criei um controller Rest onde implementei o serviço REST para realizar a consulta de endereços a partir do número do Cep.

@@ -1,4 +1,4 @@
-Estratégia utilizada implementar a solução da Questão 2 - Manutenção de Endereços.
+Estratégia utilizada implementar Manutenção de Endereços.
 =======================================================================================
 
 Nessa questão eu implementei o serviço REST com operações para realizar o cadastro de Endereços. Criei uma entidade Endereço, nessa entidade irá conter

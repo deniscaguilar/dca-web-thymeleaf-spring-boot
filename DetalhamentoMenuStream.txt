@@ -1,4 +1,4 @@
-Estratégia utilizada implementar a solução da Questão 3 - Validação Stream Caracteres
+Estratégia utilizada implementar a Validação Stream Caracteres
 =======================================================================================
 
 Implementei uma classe Java com algoritmo para identificar, classificar e apresentar caracteres de uma String que não se repetem. 

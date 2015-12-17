@@ -1,4 +1,4 @@
-Resposta da Questão 4 - Processo do Protocolo HTTP entre o Client e o Server
+Processo do Protocolo HTTP entre o Client e o Server
 =======================================================================================
 
 Segue algumas considerações/características necessárias mencionar antes de detalhar minha resposta:
